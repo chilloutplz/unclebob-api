@@ -1,4 +1,8 @@
--i https://pypi.org/simple
-asgiref==3.6.0 ; python_version >= '3.7'
-django==4.2
-sqlparse==0.4.3 ; python_version >= '3.5'
+asgiref==3.6.0
+Django==4.2
+djangorestframework==3.16.0
+djangorestframework_simplejwt==5.5.0
+psycopg2==2.9.10
+PyJWT==2.9.0
+sqlparse==0.4.3
+tzdata==2025.2
