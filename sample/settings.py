@@ -37,10 +37,45 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.kakao',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+
     'rest_framework',
+    'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'accounts',
 ]
+
+SITE_ID = 1
+
+REST_USE_JWT = True
+
+ACCOUNT_AUTHENTICATED_METHODS = 'email',
+ACCOUNT_EMAIL_REQUIRED = True
+
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': 'YOUR_GOOGLE_CLIENT_ID',
+            'secret': 'YOUR_GOOGLE_CLIENT_SECRET',
+        }
+    },
+    'kakao': {
+        'APP': {
+            'client_id': 'starnew@kakao.com',
+            'secret': '7aa5bc8394936b1e1e8b4d3e585a0adf',
+        }
+    }
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -56,6 +91,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'sample.urls'
