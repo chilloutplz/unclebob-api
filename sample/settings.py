@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
+
     'accounts',
+    'bible',
 ]
 
 SITE_ID = 1
@@ -120,7 +122,7 @@ DATABASES = {
         'HOST': 'svc.sel4.cloudtype.app',
         'PORT': '30460',
         'OPTIONS': {
-            'options': '-c search_path=accounts',
+            'options': '-c search_path=bible, accounts',
             'client_encoding': 'utf8',
         },
     }
