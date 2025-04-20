@@ -4,9 +4,6 @@ class Version(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True)
 
-    class Meta:
-        db_table = 'bible.bibleversion'
-
     def __str__(self):
         return self.name
 
@@ -20,7 +17,6 @@ class Book(models.Model):
     class Meta:
         unique_together = ('slug',)
         ordering = ['order']
-        db_table = 'bible.book'
 
     def __str__(self):
         return self.name
@@ -36,7 +32,6 @@ class Verse(models.Model):
     class Meta:
         unique_together = ('version', 'book', 'chapter', 'number')
         ordering = ['version', 'book', 'chapter', 'number']
-        db_table = 'bible.verse'
 
     def __str__(self):
         return f"{self.version.slug} {self.book.slug} {self.chapter}:{self.number}"

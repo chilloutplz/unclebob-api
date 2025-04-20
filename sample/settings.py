@@ -122,7 +122,7 @@ DATABASES = {
         'HOST': 'svc.sel4.cloudtype.app',
         'PORT': '30460',
         'OPTIONS': {
-            'options': '-c search_path=bible, accounts',
+            # 'options': '-c search_path=accounts',
             'client_encoding': 'utf8',
         },
     }
@@ -155,7 +155,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
