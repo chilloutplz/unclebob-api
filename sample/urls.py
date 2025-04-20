@@ -3,5 +3,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),  # 여기에 연결!
+    path('accounts/', include('accounts.urls')),
+    path('bible/', include('bible.urls')),
 ]

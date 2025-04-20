@@ -2,7 +2,7 @@ from django.db import models
 
 class Version(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, allow_unicode=True)
 
     class Meta:
         ordering = ['id']
@@ -13,7 +13,7 @@ class Version(models.Model):
 
 class Book(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField()
+    slug = models.SlugField(allow_unicode=True)
     testament = models.CharField(max_length=10, choices=(('NT', 'New Testament'), ('OT', 'Old Testament')))
 
     class Meta:
