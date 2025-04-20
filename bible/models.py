@@ -11,7 +11,7 @@ class Version(models.Model):
 class Book(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField()
-    testament = models.CharField(max_length=10, choices=(('신', '신약'), ('구', '구약약')))
+    testament = models.CharField(max_length=10, choices=(('신', '신약'), ('구', '구약')))
     order = models.PositiveIntegerField()
 
     class Meta:

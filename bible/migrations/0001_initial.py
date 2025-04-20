@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
                 ('slug', models.SlugField()),
-                ('testament', models.CharField(choices=[('신', '신약'), ('구', '구약약')], max_length=10)),
+                ('testament', models.CharField(choices=[('NT', 'New Testament'), ('OT', 'Old Testament')], max_length=10)),
                 ('order', models.PositiveIntegerField()),
             ],
             options={
