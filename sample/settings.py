@@ -120,9 +120,8 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': 'Vari3112##',
         'HOST': 'svc.sel4.cloudtype.app',
-        'PORT': '30460',
+        'PORT': '30944',
         'OPTIONS': {
-            # 'options': '-c search_path=accounts',
             'client_encoding': 'utf8',
         },
     }
