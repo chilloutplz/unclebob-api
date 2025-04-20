@@ -4,6 +4,9 @@ class Version(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True)
 
+    class Meta:
+        ordering = ['id']
+        
     def __str__(self):
         return self.name
 
@@ -11,12 +14,11 @@ class Version(models.Model):
 class Book(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField()
-    testament = models.CharField(max_length=10, choices=(('신', '신약'), ('구', '구약')))
-    order = models.PositiveIntegerField()
+    testament = models.CharField(max_length=10, choices=(('NT', 'New Testament'), ('OT', 'Old Testament')))
 
     class Meta:
         unique_together = ('slug',)
-        ordering = ['order']
+        ordering = ['id']
 
     def __str__(self):
         return self.name
