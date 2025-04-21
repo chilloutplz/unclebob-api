@@ -78,7 +78,7 @@ class RandomVerseView(APIView):
                 "chapter": verse.chapter,
                 "number": verse.number,
                 "text": verse.text,
-            }, content_type="application/json; charset=utf-8")
+            }, content_type="charset=utf-8")
         except Exception as e:
             return Response({"error": str(e)}, status=500)
 class VerseSearchView(ListAPIView):
