@@ -1,6 +1,7 @@
 import random
 
 from django.shortcuts import get_object_or_404
+from django.db.models import Max
 
 from rest_framework import generics
 from rest_framework.response import Response
@@ -59,18 +60,27 @@ class SingleVerseView(RetrieveAPIView):
     
 class RandomVerseView(APIView):
     def get(self, request):
-        count = Verse.objects.count()
-        if count == 0:
-            return Response({"error": "No verses found."}, status=404)
-        random_index = random.randint(0, count - 1)
-        verses = Verse.objects.all()[random_index]
-        return Response({
-            "version": verses.version.slug,
-            "book": verses.book.slug,
-            "chapter": verses.chapter,
-            "number": verses.number,
-            "text": verses.text
-        })
+        try:
+            verses = Verse.objects.filter(
+                version__slug='우리말',
+                book__testament='NT'
+            )
+            count = verses.count()
+            if count == 0:
+                return Response({"error": "신약 말씀을 찾을 수 없습니다."}, status=404)
+
+            random_index = random.randint(0, count - 1)
+            verse = verses[random_index]
+
+            return Response({
+                "version": verse.version.slug,
+                "book": verse.book.name,
+                "chapter": verse.chapter,
+                "number": verse.number,
+                "text": verse.text,
+            })
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
 class VerseSearchView(ListAPIView):
     serializer_class = VerseSerializer
 
