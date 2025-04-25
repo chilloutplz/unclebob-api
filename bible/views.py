@@ -7,6 +7,8 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.permissions import AllowAny
+from rest_framework.renderers import JSONRenderer
 
 from .models import Version, Book, Verse
 from .serializers import VersionSerializer, BookSerializer, VerseSerializer
@@ -59,8 +61,15 @@ class SingleVerseView(RetrieveAPIView):
         )
     
 class RandomVerseView(APIView):
+
+    # 이 뷰만 누구나(토큰 없이) 접근 가능하도록 설정
+    permission_classes = [AllowAny]
+    # JSONRenderer 를 명시적으로 사용
+    renderer_classes = [JSONRenderer]
+
     def get(self, request):
         try:
+             # 우리말 버전 신약만 필터
             verses = Verse.objects.filter(
                 version__slug='우리말',
                 book__testament='NT'
@@ -72,13 +81,15 @@ class RandomVerseView(APIView):
             random_index = random.randint(0, count - 1)
             verse = verses[random_index]
 
+            # DRF Response 는 renderer_classes 에 따라 JSON으로 직렬화하며
+            # settings.UNICODE_JSON = True 이면 한글도 제대로 인코딩 됩니다.
             return Response({
                 "version": verse.version.slug,
                 "book": verse.book.name,
                 "chapter": verse.chapter,
                 "number": verse.number,
                 "text": verse.text,
-            }, content_type="application/json; charset=utf-8")
+            })
         except Exception as e:
             return Response({"error": str(e)}, status=500)
 class VerseSearchView(ListAPIView):
