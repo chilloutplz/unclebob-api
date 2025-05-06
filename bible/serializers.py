@@ -20,3 +20,4 @@ class VerseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Verse
         fields = ['version', 'book', 'chapter', 'number', 'text']
+        

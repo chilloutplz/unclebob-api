@@ -98,3 +98,9 @@ class VerseSearchView(ListAPIView):
     def get_queryset(self):
         query = self.request.query_params.get('q', '')
         return Verse.objects.filter(text__icontains=query)
+
+class NumberListView(generics.ListAPIView):
+    def get(self, request, version_slug, book_slug, chapter):
+        verses = Verse.objects.filter(version__slug=version_slug, book__slug=book_slug, chapter=chapter)
+        numbers = verses.values_list('number', flat=True).distinct().order_by('number')
+        return Response(numbers)
