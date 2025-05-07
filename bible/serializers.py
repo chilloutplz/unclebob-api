@@ -21,3 +21,9 @@ class VerseSerializer(serializers.ModelSerializer):
         model = Verse
         fields = ['version', 'book', 'chapter', 'number', 'text']
         
+class RangeRequestSerializer(serializers.Serializer):
+    version = serializers.CharField()
+    book = serializers.CharField()
+    ranges = serializers.ListField(child=serializers.CharField())
+
+        

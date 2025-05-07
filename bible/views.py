@@ -3,15 +3,15 @@ import random
 from django.shortcuts import get_object_or_404
 from django.db.models import Max
 
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.renderers import JSONRenderer
 
 from .models import Version, Book, Verse
-from .serializers import VersionSerializer, BookSerializer, VerseSerializer
+from .serializers import VersionSerializer, BookSerializer, VerseSerializer, RangeRequestSerializer
 
 class VersionListView(generics.ListAPIView):
     queryset = Version.objects.all()
@@ -104,3 +104,56 @@ class NumberListView(generics.ListAPIView):
         verses = Verse.objects.filter(version__slug=version_slug, book__slug=book_slug, chapter=chapter)
         numbers = verses.values_list('number', flat=True).distinct().order_by('number')
         return Response(numbers)
+    
+    
+class MultiRangeVerseView(GenericAPIView):
+    serializer_class = RangeRequestSerializer  # ✨ 중요
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data.get("requests", []), many=True)
+        serializer.is_valid(raise_exception=True)
+
+        results = []
+        for item in serializer.validated_data:
+            version_slug = item["version"]
+            book_slug = item["book"]
+            ranges = item["ranges"]
+
+            try:
+                version = Version.objects.get(slug=version_slug)
+                book = Book.objects.get(slug=book_slug)
+            except (Version.DoesNotExist, Book.DoesNotExist):
+                results.append({
+                    "version": version_slug,
+                    "book": book_slug,
+                    "error": "Invalid version or book"
+                })
+                continue
+
+            all_verses = Verse.objects.none()
+            for r in ranges:
+                try:
+                    start, end = r.split('-')
+                    sc, sv = map(int, start.split(','))
+                    ec, ev = map(int, end.split(','))
+                except ValueError:
+                    continue
+
+                verses = Verse.objects.filter(version=version, book=book).filter(
+                    chapter__gt=sc, chapter__lt=ec
+                ) | Verse.objects.filter(
+                    version=version, book=book, chapter=sc, number__gte=sv
+                ) | Verse.objects.filter(
+                    version=version, book=book, chapter=ec, number__lte=ev
+                )
+
+                all_verses |= verses
+
+            serialized = VerseSerializer(all_verses.order_by("chapter", "number"), many=True)
+            results.append({
+                "version": version.slug,
+                "book": book.slug,
+                "verses": serialized.data
+            })
+
+        return Response({"results": results})
