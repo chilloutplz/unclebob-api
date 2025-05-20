@@ -62,29 +62,22 @@ class SingleVerseView(RetrieveAPIView):
     
 class RandomVerseView(APIView):
 
-    # 이 뷰만 누구나(토큰 없이) 접근 가능하도록 설정
+    # 이 뷰는 누구나(토큰 없이) 접근 가능하도록 설정
     permission_classes = [AllowAny]
     # JSONRenderer 를 명시적으로 사용
     renderer_classes = [JSONRenderer]
 
     def get(self, request):
         try:
-             # 우리말 버전 신약만 필터
-            verses = Verse.objects.filter(
-                version__slug='우리말',
+            version_slug = request.query_params.get('version', '우리말')
+            version = Version.objects.filter(slug=version_slug).first()
+            verse = Verse.objects.filter(
+                version=version,
                 book__testament='NT'
-            )
-            count = verses.count()
-            if count == 0:
-                return Response({"error": "신약 말씀을 찾을 수 없습니다."}, status=404)
+            ).order_by('?').first()
 
-            random_index = random.randint(0, count - 1)
-            verse = verses[random_index]
-
-            # DRF Response 는 renderer_classes 에 따라 JSON으로 직렬화하며
-            # settings.UNICODE_JSON = True 이면 한글도 제대로 인코딩 됩니다.
             return Response({
-                "version": verse.version.slug,
+                "version": version.slug,
                 "book": verse.book.name,
                 "chapter": verse.chapter,
                 "number": verse.number,
